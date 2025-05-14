@@ -11,7 +11,7 @@ class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
         Onde X, Z e W são vértices no grafo que não tem uma aresta entre eles.
         :return: Um objeto do tipo set que contém os pares de vértices não adjacentes
         '''
-        pass # Apague essa instrução e inicie seu código aqui
+        pass
 
     def ha_laco(self):
         '''
@@ -40,6 +40,7 @@ class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
             if self.arestas[a].v2.rotulo == V:
                 grau += 1
         return grau
+#o que são v1 e v2? O que eles representam?
 
     def ha_paralelas(self):
         '''
@@ -59,14 +60,24 @@ class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
         :return: Uma lista os rótulos das arestas que incidem sobre o vértice
         :raises: VerticeInvalidoException se o vértice não existe no grafo
         '''
-        
+#se o vertice nao existir no grafo
+        if not self.existe_rotulo_vertice(V):
+            raise VerticeInvalidoError()
 
+        lista = []
+        for a in self.arestas:
+#pega cada chave(nome de cada aresta) e se ela for igual a aresta de v1 ou v2, adiciona a aresta analisada na lista
+            if self.arestas[a].v1.rotulo == V or self.arestas[a].v2.rotulo == V:
+                lista.append(self.arestas[a].rotulo)
+        return set(lista)
     def eh_completo(self):
         '''
         Verifica se o grafo é completo.
         :return: Um valor booleano que indica se o grafo é completo
         '''
-        pass
-    def dfs(self, V=""):
-        arestas_ord = sorted(self.arestas.values())
-        arvore_dfs = MeuGrafo()
+#um grafo completo nao tem laço, nem paralela
+        if len(self.vertices) == 0:
+            if self.ha_laco() or self.ha_paralelas():
+                return False
+            return True
+        return False
