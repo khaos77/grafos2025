@@ -11,7 +11,26 @@ class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
         Onde X, Z e W são vértices no grafo que não tem uma aresta entre eles.
         :return: Um objeto do tipo set que contém os pares de vértices não adjacentes
         '''
-        pass
+        n = len(self.vertices)
+        nao_adjacentes = set()
+
+#conjunto dict de vertices adjacentes para comparar com as arestas, resultando os nao adj
+        adjacentes = {v.rotulo: set() for v in self.vertices}
+#'A':set(),'B':set()
+        for aresta in self.arestas.values():
+            adjacentes[aresta.v1.rotulo].add(aresta.v2.rotulo)
+            adjacentes[aresta.v2.rotulo].add(aresta.v1.rotulo)
+#adiciona no conj o vertice de cada aresta, sendo v1 e v2 vertices de cada aresta
+        for i in range(n):
+#percorre cada vertice do grafo
+            rotulo_i = self.vertices[i].rotulo
+#rotulo_i recebe o rotulo de cada vertice
+            for j in range(i + 1, n):
+                rotulo_j = self.vertices[j].rotulo
+                if rotulo_j not in adjacentes[rotulo_i]:
+                    nao_adjacentes.add(f"{rotulo_i}-{rotulo_j}")
+#se o rotulo analisado nao estiver nos adjacentes, certamente é nao adjacente
+        return nao_adjacentes
 
     def ha_laco(self):
         '''
@@ -40,7 +59,6 @@ class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
             if self.arestas[a].v2.rotulo == V:
                 grau += 1
         return grau
-#o que são v1 e v2? O que eles representam?
 
     def ha_paralelas(self):
         '''
@@ -75,9 +93,22 @@ class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
         Verifica se o grafo é completo.
         :return: Um valor booleano que indica se o grafo é completo
         '''
-#um grafo completo nao tem laço, nem paralela
-        if len(self.vertices) == 0:
-            if self.ha_laco() or self.ha_paralelas():
+        if self.ha_laco():
+            return False
+
+        n = len(self.vertices)
+
+        if len(self.arestas) != n * (n - 1) // 2:
+            return False
+
+        for vertice in self.vertices:
+            if self.grau(vertice.rotulo) != n - 1:
                 return False
-            return True
-        return False
+
+        return True
+
+
+"""""
+todos os pontos estao conectados e sao adjacentes, todos de mesmo grau, cada 
+ vertice é vizinho dos outros
+"""""
