@@ -104,11 +104,16 @@ class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
         for vertice in self.vertices:
             if self.grau(vertice.rotulo) != n - 1:
                 return False
-
         return True
+        
+    def dfs(self, V=''):
+#recebe vertice-raiz
+#retorna um grafo
+        arvore_dfs = MeuGrafo()
+        arvore_dfs.adiciona_vertice(V)
+        
+        for a in self.arestas.values():
+            arvore_dfs.adiciona_vertice(a.v1)
+            arvore_dfs.adiciona_vertice(a.v2)
 
-
-"""""
-todos os pontos estao conectados e sao adjacentes, todos de mesmo grau, cada 
- vertice é vizinho dos outros
-"""""
+        return arvore_dfs
