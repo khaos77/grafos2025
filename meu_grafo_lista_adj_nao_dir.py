@@ -105,15 +105,86 @@ class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
             if self.grau(vertice.rotulo) != n - 1:
                 return False
         return True
-        
-    def dfs(self, V=''):
-#recebe vertice-raiz
-#retorna um grafo
-        arvore_dfs = MeuGrafo()
-        arvore_dfs.adiciona_vertice(V)
-        
-        for a in self.arestas.values():
-            arvore_dfs.adiciona_vertice(a.v1)
-            arvore_dfs.adiciona_vertice(a.v2)
 
-        return arvore_dfs
+    def dfs(self, V=''):
+        '''
+        DFS recursivo que retorna uma árvore DFS
+        :param V: Vértice inicial (rótulo)
+        :return: Novo grafo representando a árvore DFS
+        '''
+        if not self.existe_rotulo_vertice(V):
+            raise VerticeInvalidoError()
+
+        # Cria nova árvore DFS
+        self.arvore_dfs = MeuGrafo()
+        self.visitados_dfs = set()
+
+        # Adiciona o vértice inicial
+        self.arvore_dfs.adiciona_vertice(V)
+        self.visitados_dfs.add(V)
+
+        # Chama a função recursiva
+        self._dfs_recursivo(V)
+
+        return self.arvore_dfs
+
+    def _dfs_recursivo(self, atual):
+        '''
+        Função auxiliar recursiva para o DFS
+        :param atual: Vértice atual sendo visitado (rótulo)
+        '''
+        # Percorre todas as arestas do vértice atual
+        for aresta_rotulo in self.arestas_sobre_vertice(atual):
+            aresta = self.arestas[aresta_rotulo]
+
+            # Determina o vértice oposto
+            if aresta.v1.rotulo == atual:
+                vizinho = aresta.v2.rotulo
+            else:
+                vizinho = aresta.v1.rotulo
+
+            # Se o vizinho não foi visitado
+            if vizinho not in self.visitados_dfs:
+                # Adiciona o vértice e a aresta na árvore
+                self.arvore_dfs.adiciona_vertice(vizinho)
+                self.arvore_dfs.adiciona_aresta(aresta_rotulo, atual, vizinho)
+                self.visitados_dfs.add(vizinho)
+
+                # Chamada recursiva
+                self._dfs_recursivo(vizinho)
+
+    def bfs_recursivo(self, V=''):
+        '''
+        BFS recursivo a partir do vértice V.
+        Retorna um novo grafo representando a árvore BFS.
+        '''
+        if not self.existe_rotulo_vertice(V):
+            raise VerticeInvalidoError()
+
+        arvore_bfs = MeuGrafo()
+        visitados = {V}
+        fila = [V]
+        arvore_bfs.adiciona_vertice(V)
+
+        def bfs_helper(fila, index=0):
+            if index >= len(fila):
+                return
+
+            atual = fila[index]
+
+            # Visita todos os vizinhos do vértice atual
+            for aresta in sorted(self.arestas_sobre_vertice(atual)):
+                aresta_obj = self.arestas[aresta]
+                vizinho = aresta_obj.v2.rotulo if aresta_obj.v1.rotulo == atual else aresta_obj.v1.rotulo
+
+                if vizinho not in visitados:
+                    visitados.add(vizinho)
+                    fila.append(vizinho)
+                    arvore_bfs.adiciona_vertice(vizinho)
+                    arvore_bfs.adiciona_aresta(aresta, atual, vizinho)
+
+            # Chama recursivamente para o próximo vértice na fila
+            bfs_helper(fila, index + 1)
+
+        bfs_helper(fila)
+        return arvore_bfs

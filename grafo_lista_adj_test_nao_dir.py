@@ -25,6 +25,26 @@ class TestGrafo(unittest.TestCase):
         # Esse tem um pequena diferença na segunda aresta
         self.g_p4 = GrafoJSON.json_to_grafo('test_json/grafo_pb4.json', MeuGrafo())
 
+        #arvore
+        self.g_p_dfs = MeuGrafo()
+        self.g_p_dfs.adiciona_vertice("J")
+        self.g_p_dfs.adiciona_vertice("C")
+        self.g_p_dfs.adiciona_vertice("E")
+        self.g_p_dfs.adiciona_vertice("P")
+        self.g_p_dfs.adiciona_vertice("A")
+        self.g_p_dfs.adiciona_vertice("M")
+        self.g_p_dfs.adiciona_vertice("S")
+        self.g_p_dfs.adiciona_aresta("a1", "J", "C")
+        self.g_p_dfs.adiciona_aresta("a2", "C", "P")
+        self.g_p_dfs.adiciona_aresta("a3", "P", "C")
+        self.g_p_dfs.adiciona_aresta("a4", "C", "E")
+        self.g_p_dfs.adiciona_aresta("a5", "E", "C")
+        self.g_p_dfs.adiciona_aresta("a6", "C", "A")
+        self.g_p_dfs.adiciona_aresta("a7", "C", "M")
+        self.g_p_dfs.adiciona_aresta("a8", "M", "A")
+        self.g_p_dfs.adiciona_aresta("a9", "A", "S")
+
+
         # Grafo da Paraíba sem arestas paralelas
         self.g_p_sem_paralelas = MeuGrafo()
         self.g_p_sem_paralelas.adiciona_vertice("J")
@@ -74,13 +94,6 @@ class TestGrafo(unittest.TestCase):
 
         # Grafo p\teste de remoção em casta
         self.g_r = GrafoBuilder().tipo(MeuGrafo()).vertices(2).arestas(1).build()
-
-        self.g_p_dfs = MeuGrafo()
-        self.g_p_dfs.adiciona_aresta("J")
-        self.g_p_dfs.adiciona_aresta("C")
-        self.g_p_dfs.adiciona_aresta("E")
-        self.g_p_dfs.adiciona_aresta("P")
-        self.g_p_dfs.adiciona_aresta("a1", "J", "C")
 
     def test_adiciona_aresta(self):
         self.assertTrue(self.g_p.adiciona_aresta('a10', 'J', 'C'))
@@ -200,8 +213,38 @@ class TestGrafo(unittest.TestCase):
         self.assertFalse((self.g_l5.eh_completo()))
         self.assertFalse((self.g_d.eh_completo()))
         self.assertFalse((self.g_d2.eh_completo()))
+
     def test_dfs(self):
-        self.assertEqual(self.g_p.dfs("J"), self.g_p_dfs)
-        self.assertEqual(self.g_p.dfs("C"), self.g_p_dfs)
-        self.assertEqual(self.g_p.dfs("E"), self.g_p_dfs)
-        self.assertEqual(self.g_p.dfs("P"), self.g_p_dfs)
+    # Teste com grafo simples
+        g = MeuGrafo()
+        g.adiciona_vertice('A')
+        g.adiciona_vertice('B')
+        g.adiciona_vertice('C')
+        g.adiciona_aresta('a1', 'A', 'B')
+        g.adiciona_aresta('a2', 'B', 'C')
+
+        arvore = g.dfs('A')
+
+        # Verifica vértices
+        self.assertEqual(set(v.rotulo for v in arvore.vertices), {'A', 'B', 'C'})
+
+        # Verifica arestas (a ordem pode variar dependendo da implementação)
+        self.assertTrue(arvore.existe_rotulo_aresta('a1'))
+        self.assertTrue(arvore.existe_rotulo_aresta('a2'))
+
+        # Teste com vértice inválido
+        with self.assertRaises(VerticeInvalidoError):
+            g.dfs('X')
+
+    def test_bfs_recursivo(self):
+        # Teste básico
+        resultado = self.g_p.bfs_recursivo("C")
+        self.assertEqual(resultado, self.g_p_bfs_c_esperado)  # Defina seu grafo esperado
+
+        # Verifica propriedades da BFS
+        self.assertEqual(len(resultado.arestas), len(self.g_p.vertices) - 1)
+
+        # Teste com grafo vazio
+        g_vazio = MeuGrafo()
+        with self.assertRaises(VerticeInvalidoError):
+            g_vazio.bfs_recursivo("A")
