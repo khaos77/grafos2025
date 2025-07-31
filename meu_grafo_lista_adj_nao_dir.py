@@ -104,87 +104,133 @@ class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
         for vertice in self.vertices:
             if self.grau(vertice.rotulo) != n - 1:
                 return False
+
         return True
 
     def dfs(self, V=''):
-        '''
-        DFS recursivo que retorna uma árvore DFS
-        :param V: Vértice inicial (rótulo)
-        :return: Novo grafo representando a árvore DFS
-        '''
-        if not self.existe_rotulo_vertice(V):
-            raise VerticeInvalidoError()
+        grafo_dfs = MeuGrafo()  # Grafo formado após a DFS
+        grafo_dfs.adiciona_vertice(V)  # Incluindo no grafo resposta nosso primeiro vértice
+        return self.dfs_rec(V, grafo_dfs)
 
-        # Cria nova árvore DFS
-        self.arvore_dfs = MeuGrafo()
-        self.visitados_dfs = set()
-
-        # Adiciona o vértice inicial
-        self.arvore_dfs.adiciona_vertice(V)
-        self.visitados_dfs.add(V)
-
-        # Chama a função recursiva
-        self._dfs_recursivo(V)
-
-        return self.arvore_dfs
-
-    def _dfs_recursivo(self, atual):
-        '''
-        Função auxiliar recursiva para o DFS
-        :param atual: Vértice atual sendo visitado (rótulo)
-        '''
-        # Percorre todas as arestas do vértice atual
-        for aresta_rotulo in self.arestas_sobre_vertice(atual):
-            aresta = self.arestas[aresta_rotulo]
-
-            # Determina o vértice oposto
-            if aresta.v1.rotulo == atual:
-                vizinho = aresta.v2.rotulo
+    def dfs_rec(self, V, grafo_dfs):
+        arestas = sorted(self.arestas_sobre_vertice(V))  # Aqui estamos acessando os rótulos das arestas, pois essa função retorna um conjunto de rotulos
+        for a in arestas:
+            if not grafo_dfs.existe_rotulo_aresta(a):  # Verifica se a aresta não está no grafo_dfs
+                ares = self.get_aresta(a)  # Pegando o objeto aresta caso ela não esteja no grafo_dfs
+                if ares.v1.rotulo == V:  # Verfica os vertices que a aresta incide (Nao queremos o que chamou a recursão)
+                    proxV = ares.v2.rotulo
+                else:
+                    proxV = ares.v1.rotulo
+                if grafo_dfs.existe_rotulo_vertice(proxV):
+                    continue
+                else:
+                    grafo_dfs.adiciona_vertice(proxV)
+                    grafo_dfs.adiciona_aresta(ares)
+                    self.dfs_rec(proxV, grafo_dfs)
             else:
-                vizinho = aresta.v1.rotulo
+                continue
+        return grafo_dfs
 
-            # Se o vizinho não foi visitado
-            if vizinho not in self.visitados_dfs:
-                # Adiciona o vértice e a aresta na árvore
-                self.arvore_dfs.adiciona_vertice(vizinho)
-                self.arvore_dfs.adiciona_aresta(aresta_rotulo, atual, vizinho)
-                self.visitados_dfs.add(vizinho)
+    def bfs(self, v=''):
+        grafo_bfs = MeuGrafo()
+        grafo_bfs.adiciona_vertice(v)
+        return self.bfs_rec(v, grafo_bfs)
 
-                # Chamada recursiva
-                self._dfs_recursivo(vizinho)
+    def bfs_rec(self, v, grafo_bfs):
+        arestas = sorted(self.arestas_sobre_vertice(v))
+        v_visit = []
+        for a in arestas:
+            if not grafo_bfs.existe_rotulo_aresta(a):
+                are = self.get_aresta(a)
+                if are.v1.rotulo == v:
+                    proxv = are.v2.rotulo
 
-    def bfs_recursivo(self, V=''):
-        '''
-        BFS recursivo a partir do vértice V.
-        Retorna um novo grafo representando a árvore BFS.
-        '''
-        if not self.existe_rotulo_vertice(V):
-            raise VerticeInvalidoError()
+                else:
+                    proxv = are.v1.rotulo
 
-        arvore_bfs = MeuGrafo()
-        visitados = {V}
-        fila = [V]
-        arvore_bfs.adiciona_vertice(V)
+                if not grafo_bfs.existe_rotulo_vertice(proxv):
+                    grafo_bfs.adiciona_vertice(proxv)
+                    grafo_bfs.adiciona_aresta(are)
+                    v_visit.append(proxv)
 
-        def bfs_helper(fila, index=0):
-            if index >= len(fila):
-                return
+                else:
+                    continue
+            else:
+                continue
+        for ve in v_visit:
+            self.bfs_rec(ve, grafo_bfs)
+        return grafo_bfs
 
-            atual = fila[index]
+    def ha_ciclo(self):
+        def ha_ciclo_rec(V):
+            caminho.append(V)
+            arestas = sorted(self.arestas_sobre_vertice(V))
+            for a in arestas:
+                if a not in caminho:
+                    ares = self.get_aresta(a)
+                    if ares.v1.rotulo == V:
+                        proxV = ares.v2.rotulo
+                    else:
+                        proxV = ares.v1.rotulo
+                    if proxV in caminho:
+                        caminho.append(a)
+                        caminho.append(proxV)
+                        break
+                    else:
+                        caminho.append(ares.rotulo)
+                        result = ha_ciclo_rec(proxV)
+                    if result:
+                        caminho.pop()
+                        return result
+            i = caminho.index(caminho[-1])
+            if i != len(caminho) - 1:
+                return caminho[i:]
+            for i in range(2):
+                if len(caminho) > 0:
+                    caminho.pop()
+            return False
+        for vertice in self.vertices:
+            caminho = []
+            result = ha_ciclo_rec(vertice.rotulo)
+            if result:
+                return result
+        return False
 
-            # Visita todos os vizinhos do vértice atual
-            for aresta in sorted(self.arestas_sobre_vertice(atual)):
-                aresta_obj = self.arestas[aresta]
-                vizinho = aresta_obj.v2.rotulo if aresta_obj.v1.rotulo == atual else aresta_obj.v1.rotulo
+    def eh_conexo(self):
+        #caminho entre os vertices
+        dfs = self.dfs(sorted(self.vertices)[0])
+        return len(self.vertices) == len(dfs.vertices)
 
-                if vizinho not in visitados:
-                    visitados.add(vizinho)
-                    fila.append(vizinho)
-                    arvore_bfs.adiciona_vertice(vizinho)
-                    arvore_bfs.adiciona_aresta(aresta, atual, vizinho)
+    def ha_ciclo(self):
+        vert = self.vertices[0].rotulo
+        dfs = self.dfs(vert)
+        return self != dfs
 
-            # Chama recursivamente para o próximo vértice na fila
-            bfs_helper(fila, index + 1)
+    def eh_arvore(self):
+        if not self.eh_conexo() or self.ha_ciclo():
+            return False
+        folha = [v.rotulo for v in self.vertices if self.grau(v.rotulo) == 1]
+        return folha
 
-        bfs_helper(fila)
-        return arvore_bfs
+    def eh_bipartido(self):
+        #todos os vertices de 0 se conectam com cada um de 1
+        cor = {}
+        for v in self.vertices:
+            rotulo = v.rotulo
+            if rotulo not in cor:
+                fila = list()
+                fila.append(rotulo)
+                cor[rotulo] = 0  # cor 0
+                while fila:
+                    atual = fila.pop()
+                    for aresta in self.arestas_sobre_vertice(atual):
+                        v1 = self.arestas[aresta].v1.rotulo
+                        v2 = self.arestas[aresta].v2.rotulo
+                        vizinho = v2 if atual == v1 else v1
+
+                        if vizinho not in cor:
+                            cor[vizinho] = 1 - cor[atual]
+                            fila.append(vizinho)
+                        elif cor[vizinho] == cor[atual]:
+                            return False
+        return True

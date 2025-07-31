@@ -25,26 +25,6 @@ class TestGrafo(unittest.TestCase):
         # Esse tem um pequena diferença na segunda aresta
         self.g_p4 = GrafoJSON.json_to_grafo('test_json/grafo_pb4.json', MeuGrafo())
 
-        #arvore
-        self.g_p_dfs = MeuGrafo()
-        self.g_p_dfs.adiciona_vertice("J")
-        self.g_p_dfs.adiciona_vertice("C")
-        self.g_p_dfs.adiciona_vertice("E")
-        self.g_p_dfs.adiciona_vertice("P")
-        self.g_p_dfs.adiciona_vertice("A")
-        self.g_p_dfs.adiciona_vertice("M")
-        self.g_p_dfs.adiciona_vertice("S")
-        self.g_p_dfs.adiciona_aresta("a1", "J", "C")
-        self.g_p_dfs.adiciona_aresta("a2", "C", "P")
-        self.g_p_dfs.adiciona_aresta("a3", "P", "C")
-        self.g_p_dfs.adiciona_aresta("a4", "C", "E")
-        self.g_p_dfs.adiciona_aresta("a5", "E", "C")
-        self.g_p_dfs.adiciona_aresta("a6", "C", "A")
-        self.g_p_dfs.adiciona_aresta("a7", "C", "M")
-        self.g_p_dfs.adiciona_aresta("a8", "M", "A")
-        self.g_p_dfs.adiciona_aresta("a9", "A", "S")
-
-
         # Grafo da Paraíba sem arestas paralelas
         self.g_p_sem_paralelas = MeuGrafo()
         self.g_p_sem_paralelas.adiciona_vertice("J")
@@ -92,8 +72,358 @@ class TestGrafo(unittest.TestCase):
 
         self.g_d2 = GrafoBuilder().tipo(MeuGrafo()).vertices(4).build()
 
+        self.g_d3 = GrafoBuilder().tipo(MeuGrafo()).vertices(7).arestas(4).build()
+
         # Grafo p\teste de remoção em casta
         self.g_r = GrafoBuilder().tipo(MeuGrafo()).vertices(2).arestas(1).build()
+
+        # GRAFOS TESTE - ROTEIRO 2
+
+        #Grafo completo k5
+        self.g_k5 = GrafoBuilder().tipo(MeuGrafo()) \
+            .vertices(5).arestas(True).build()
+
+        #Grafo completo K4
+        self.g_k4 = MeuGrafo()
+        self.g_k4.adiciona_vertice("J")
+        self.g_k4.adiciona_vertice("C")
+        self.g_k4.adiciona_vertice("E")
+        self.g_k4.adiciona_vertice("P")
+        self.g_k4.adiciona_aresta('a1', 'J', 'C')
+        self.g_k4.adiciona_aresta('a2', 'J', 'E')
+        self.g_k4.adiciona_aresta('a3', 'J', 'P')
+        self.g_k4.adiciona_aresta('a4', 'E', 'C')
+        self.g_k4.adiciona_aresta('a5', 'P', 'C')
+        self.g_k4.adiciona_aresta('a6', 'P', 'E')
+
+        #Grafo conexo, mas não é completo
+        self.g_co2 = MeuGrafo()
+        self.g_co2.adiciona_vertice("P")
+        self.g_co2.adiciona_vertice("Q")
+        self.g_co2.adiciona_vertice("R")
+        self.g_co2.adiciona_vertice("S")
+        self.g_co2.adiciona_vertice("T")
+        self.g_co2.adiciona_aresta('a1', 'P', 'Q')
+        self.g_co2.adiciona_aresta('a2', 'Q', 'R')
+        self.g_co2.adiciona_aresta('a3', 'R', 'S')
+        self.g_co2.adiciona_aresta('a4', 'S', 'T')
+        self.g_co2.adiciona_aresta('a5', 'P', 'T')
+        self.g_co2.adiciona_aresta('a6', 'P', 'S')
+        self.g_co2.adiciona_aresta('a7', 'Q', 'T')
+        self.g_co2.adiciona_aresta('a8', 'Q', 'S')
+
+        #O problema das pontes de Konigsberg
+        #Conexo e não completo
+        self.g1 = MeuGrafo()
+        self.g1.adiciona_vertice("A")
+        self.g1.adiciona_vertice("B")
+        self.g1.adiciona_vertice("C")
+        self.g1.adiciona_vertice("D")
+        self.g1.adiciona_aresta('a1', 'A', 'B')
+        self.g1.adiciona_aresta('a2', 'B', 'C')
+        self.g1.adiciona_aresta('a3', 'A', 'C')
+        self.g1.adiciona_aresta('a4', 'A', 'D')
+        self.g1.adiciona_aresta('a5', 'D', 'A')
+        self.g1.adiciona_aresta('a6', 'C', 'A')
+        self.g1.adiciona_aresta('a7', 'B', 'D')
+
+        #Grafo conexo e não completo
+        #Dois vértices de grau 1
+        self.g2 = MeuGrafo()
+        self.g2.adiciona_vertice("A")
+        self.g2.adiciona_vertice("B")
+        self.g2.adiciona_vertice("C")
+        self.g2.adiciona_vertice("D")
+        self.g2.adiciona_vertice("E")
+        self.g2.adiciona_vertice("F")
+        self.g2.adiciona_vertice("G")
+        self.g2.adiciona_aresta("a1", "A", "B")
+        self.g2.adiciona_aresta("a2", "A", "C")
+        self.g2.adiciona_aresta("a3", "A", "D")
+        self.g2.adiciona_aresta("a4", "C", "G")
+        self.g2.adiciona_aresta("a5", "B", "F")
+        self.g2.adiciona_aresta("a6", "B", "E")
+        self.g2.adiciona_aresta("a7", "F", "G")
+
+        #Grafo conexo
+        self.g3 = MeuGrafo()
+        self.g3.adiciona_vertice("Ana")
+        self.g3.adiciona_vertice("Bella")
+        self.g3.adiciona_vertice("Mat")
+        self.g3.adiciona_vertice("John")
+        self.g3.adiciona_vertice("Carla")
+        self.g3.adiciona_vertice("Ester")
+        self.g3.adiciona_vertice("Flavia")
+        self.g3.adiciona_vertice("Heitor")
+        self.g3.adiciona_aresta("a1", "Ana", "Bella")
+        self.g3.adiciona_aresta("a2", "Bella", "Mat")
+        self.g3.adiciona_aresta("a3", "Mat", "Carla")
+        self.g3.adiciona_aresta("a4", "Carla", "Ana")
+        self.g3.adiciona_aresta("a5", "Ana", "Ester")
+        self.g3.adiciona_aresta("a6", "Bella", "Flavia")
+        self.g3.adiciona_aresta("a7", "Mat", "Heitor")
+        self.g3.adiciona_aresta("a8", "Carla", "John")
+        self.g3.adiciona_aresta("a9", "John", "Ester")
+        self.g3.adiciona_aresta("a10", "Ester", "Flavia")
+        self.g3.adiciona_aresta("a11", "Flavia", "Heitor")
+        self.g3.adiciona_aresta("a12", "Heitor", "John")
+
+
+        #Grafo conexo e não completo
+        self.g4 = MeuGrafo()
+        self.g4.adiciona_vertice("A")
+        self.g4.adiciona_vertice("B")
+        self.g4.adiciona_vertice("C")
+        self.g4.adiciona_vertice("D")
+        self.g4.adiciona_vertice("E")
+        self.g4.adiciona_vertice("F")
+        self.g4.adiciona_vertice("G")
+        self.g4.adiciona_vertice("H")
+        self.g4.adiciona_vertice("I")
+        self.g4.adiciona_vertice("J")
+        self.g4.adiciona_aresta("a1", "A", "B")
+        self.g4.adiciona_aresta("a2", "A", "C")
+        self.g4.adiciona_aresta("a3", "B", "D")
+        self.g4.adiciona_aresta("a4", "B", "E")
+        self.g4.adiciona_aresta("a5", "C", "F")
+        self.g4.adiciona_aresta("a6", "C", "G")
+        self.g4.adiciona_aresta("a7", "D", "H")
+        self.g4.adiciona_aresta("a8", "E", "H")
+        self.g4.adiciona_aresta("a9", "F", "I")
+        self.g4.adiciona_aresta("a10", "G", "I")
+        self.g4.adiciona_aresta("a11", "H", "J")
+        self.g4.adiciona_aresta("a12", "I", "J")
+
+        #não tem ciclo
+        self.g5 = MeuGrafo()
+        self.g5.adiciona_vertice("A")
+        self.g5.adiciona_vertice("B")
+        self.g5.adiciona_vertice("C")
+        self.g5.adiciona_vertice("D")
+        self.g5.adiciona_vertice("E")
+        self.g5.adiciona_vertice("F")
+        self.g5.adiciona_vertice("G")
+        self.g5.adiciona_aresta("a1", "A", "B")
+        self.g5.adiciona_aresta("a2", "A", "C")
+        self.g5.adiciona_aresta("a3", "A", "D")
+        self.g5.adiciona_aresta("a4", "C", "G")
+        self.g5.adiciona_aresta("a5", "B", "F")
+        self.g5.adiciona_aresta("a6", "B", "E")
+
+        #não tem ciclo
+        self.g6_ciclo = MeuGrafo()
+        self.g6_ciclo.adiciona_vertice("Ana")
+        self.g6_ciclo.adiciona_vertice("Bella")
+        self.g6_ciclo.adiciona_vertice("Mat")
+        self.g6_ciclo.adiciona_vertice("John")
+        self.g6_ciclo.adiciona_vertice("Carla")
+        self.g6_ciclo.adiciona_vertice("Ester")
+        self.g6_ciclo.adiciona_vertice("Flavia")
+        self.g6_ciclo.adiciona_vertice("Heitor")
+        self.g6_ciclo.adiciona_aresta("a1", "Ana", "Bella")
+        self.g6_ciclo.adiciona_aresta("a2", "Bella", "Mat")
+        self.g6_ciclo.adiciona_aresta("a3", "Bella", "Flavia")
+        self.g6_ciclo.adiciona_aresta("a4", "Mat", "Heitor")
+        self.g6_ciclo.adiciona_aresta("a5", "Carla", "John")
+        self.g6_ciclo.adiciona_aresta("a6", "John", "Ester")
+        self.g6_ciclo.adiciona_aresta("a7", "Heitor", "John")
+
+
+        #GABARITOS DFS
+
+        self.g_k5_dfs = MeuGrafo()
+        self.g_k5_dfs.adiciona_vertice("A")
+        self.g_k5_dfs.adiciona_vertice("B")
+        self.g_k5_dfs.adiciona_vertice("C")
+        self.g_k5_dfs.adiciona_vertice("D")
+        self.g_k5_dfs.adiciona_vertice("E")
+        self.g_k5_dfs.adiciona_aresta("a1","A","B")
+        self.g_k5_dfs.adiciona_aresta("a2","A","C")
+        self.g_k5_dfs.adiciona_aresta("a8","C","D")
+        self.g_k5_dfs.adiciona_aresta("a10", "D", "E")
+
+
+        self.g_k4_dfs = MeuGrafo()
+        self.g_k4_dfs.adiciona_vertice("J")
+        self.g_k4_dfs.adiciona_vertice("C")
+        self.g_k4_dfs.adiciona_vertice("E")
+        self.g_k4_dfs.adiciona_vertice("P")
+        self.g_k4_dfs.adiciona_aresta('a1', 'J', 'C')
+        self.g_k4_dfs.adiciona_aresta('a4', 'C', 'E')
+        self.g_k4_dfs.adiciona_aresta('a6', 'E', 'P')
+
+        self.g_co2_dfs = MeuGrafo()
+        self.g_co2_dfs.adiciona_vertice("P")
+        self.g_co2_dfs.adiciona_vertice("Q")
+        self.g_co2_dfs.adiciona_vertice("R")
+        self.g_co2_dfs.adiciona_vertice("S")
+        self.g_co2_dfs.adiciona_vertice("T")
+        self.g_co2_dfs.adiciona_aresta('a1', 'P', 'Q')
+        self.g_co2_dfs.adiciona_aresta('a2', 'Q', 'R')
+        self.g_co2_dfs.adiciona_aresta('a3', 'R', 'S')
+        self.g_co2_dfs.adiciona_aresta('a4', 'S', 'T')
+
+        self.g1_dfs = MeuGrafo()
+        self.g1_dfs.adiciona_vertice("A")
+        self.g1_dfs.adiciona_vertice("B")
+        self.g1_dfs.adiciona_vertice("C")
+        self.g1_dfs.adiciona_vertice("D")
+        self.g1_dfs.adiciona_aresta('a1', 'A', 'B')
+        self.g1_dfs.adiciona_aresta('a2', 'B', 'C')
+        self.g1_dfs.adiciona_aresta('a4', 'A', 'D')
+
+        self.g2_dfs = MeuGrafo()
+        self.g2_dfs.adiciona_vertice("A")
+        self.g2_dfs.adiciona_vertice("B")
+        self.g2_dfs.adiciona_vertice("C")
+        self.g2_dfs.adiciona_vertice("D")
+        self.g2_dfs.adiciona_vertice("E")
+        self.g2_dfs.adiciona_vertice("F")
+        self.g2_dfs.adiciona_vertice("G")
+        self.g2_dfs.adiciona_aresta("a6", "B", "E")
+        self.g2_dfs.adiciona_aresta("a1", "A", "B")
+        self.g2_dfs.adiciona_aresta("a2", "A", "C")
+        self.g2_dfs.adiciona_aresta("a4", "C", "G")
+        self.g2_dfs.adiciona_aresta("a7", "F", "G")
+        self.g2_dfs.adiciona_aresta("a3", "A", "D")
+
+        self.g3_dfs = MeuGrafo()
+        self.g3_dfs.adiciona_vertice("Ana")
+        self.g3_dfs.adiciona_vertice("Bella")
+        self.g3_dfs.adiciona_vertice("Mat")
+        self.g3_dfs.adiciona_vertice("John")
+        self.g3_dfs.adiciona_vertice("Carla")
+        self.g3_dfs.adiciona_vertice("Ester")
+        self.g3_dfs.adiciona_vertice("Flavia")
+        self.g3_dfs.adiciona_vertice("Heitor")
+        self.g3_dfs.adiciona_aresta("a1", "Ana", "Bella")
+        self.g3_dfs.adiciona_aresta("a2", "Bella", "Mat")
+        self.g3_dfs.adiciona_aresta("a3", "Mat", "Carla")
+        self.g3_dfs.adiciona_aresta("a5", "Ana", "Ester")
+        self.g3_dfs.adiciona_aresta("a8", "Carla", "John")
+        self.g3_dfs.adiciona_aresta("a10", "Ester", "Flavia")
+        self.g3_dfs.adiciona_aresta("a11", "Flavia", "Heitor")
+
+
+        self.g4_dfs = MeuGrafo()
+        self.g4_dfs.adiciona_vertice("A")
+        self.g4_dfs.adiciona_vertice("B")
+        self.g4_dfs.adiciona_vertice("C")
+        self.g4_dfs.adiciona_vertice("D")
+        self.g4_dfs.adiciona_vertice("E")
+        self.g4_dfs.adiciona_vertice("F")
+        self.g4_dfs.adiciona_vertice("G")
+        self.g4_dfs.adiciona_vertice("H")
+        self.g4_dfs.adiciona_vertice("I")
+        self.g4_dfs.adiciona_vertice("J")
+        self.g4_dfs.adiciona_aresta("a1", "A", "B")
+        self.g4_dfs.adiciona_aresta("a2", "A", "C")
+        self.g4_dfs.adiciona_aresta("a3", "B", "D")
+        self.g4_dfs.adiciona_aresta("a5", "C", "F")
+        self.g4_dfs.adiciona_aresta("a7", "D", "H")
+        self.g4_dfs.adiciona_aresta("a8", "E", "H")
+        self.g4_dfs.adiciona_aresta("a10", "G", "I")
+        self.g4_dfs.adiciona_aresta("a11", "H", "J")
+        self.g4_dfs.adiciona_aresta("a12", "I", "J")
+
+        #GABARITOS BFS
+
+        self.g_k5_bfs = MeuGrafo()
+        self.g_k5_bfs.adiciona_vertice("A")
+        self.g_k5_bfs.adiciona_vertice("B")
+        self.g_k5_bfs.adiciona_vertice("C")
+        self.g_k5_bfs.adiciona_vertice("D")
+        self.g_k5_bfs.adiciona_vertice("E")
+        self.g_k5_bfs.adiciona_aresta("a6", "B", "D")
+        self.g_k5_bfs.adiciona_aresta("a3", "A", "D")
+        self.g_k5_bfs.adiciona_aresta("a8", "C", "D")
+        self.g_k5_bfs.adiciona_aresta("a10", "D", "E")
+
+        self.g_k4_bfs = MeuGrafo()
+        self.g_k4_bfs.adiciona_vertice("J")
+        self.g_k4_bfs.adiciona_vertice("C")
+        self.g_k4_bfs.adiciona_vertice("E")
+        self.g_k4_bfs.adiciona_vertice("P")
+        self.g_k4_bfs.adiciona_aresta('a2', 'J', 'E')
+        self.g_k4_bfs.adiciona_aresta('a4', 'C', 'E')
+        self.g_k4_bfs.adiciona_aresta('a6', 'E', 'P')
+
+        self.g_co2_bfs = MeuGrafo()
+        self.g_co2_bfs.adiciona_vertice("P")
+        self.g_co2_bfs.adiciona_vertice("Q")
+        self.g_co2_bfs.adiciona_vertice("R")
+        self.g_co2_bfs.adiciona_vertice("S")
+        self.g_co2_bfs.adiciona_vertice("T")
+        self.g_co2_bfs.adiciona_aresta('a1', 'P', 'Q')
+        self.g_co2_bfs.adiciona_aresta('a2', 'Q', 'R')
+        self.g_co2_bfs.adiciona_aresta('a3', 'R', 'S')
+        self.g_co2_bfs.adiciona_aresta('a7', 'Q', 'T')
+
+        self.g1_bfs = MeuGrafo()
+        self.g1_bfs.adiciona_vertice("A")
+        self.g1_bfs.adiciona_vertice("B")
+        self.g1_bfs.adiciona_vertice("C")
+        self.g1_bfs.adiciona_vertice("D")
+        self.g1_bfs.adiciona_aresta('a1', 'A', 'B')
+        self.g1_bfs.adiciona_aresta('a3', 'A', 'C')
+        self.g1_bfs.adiciona_aresta('a4', 'A', 'D')
+
+
+        self.g2_bfs = MeuGrafo()
+        self.g2_bfs.adiciona_vertice("A")
+        self.g2_bfs.adiciona_vertice("B")
+        self.g2_bfs.adiciona_vertice("C")
+        self.g2_bfs.adiciona_vertice("D")
+        self.g2_bfs.adiciona_vertice("E")
+        self.g2_bfs.adiciona_vertice("F")
+        self.g2_bfs.adiciona_vertice("G")
+        self.g2_bfs.adiciona_aresta("a2", "A", "C")
+        self.g2_bfs.adiciona_aresta("a4", "C", "G")
+        self.g2_bfs.adiciona_aresta("a1", "A", "B")
+        self.g2_bfs.adiciona_aresta("a3", "A", "D")
+        self.g2_bfs.adiciona_aresta("a5", "B", "F")
+        self.g2_bfs.adiciona_aresta("a6", "B", "E")
+
+        self.g3_bfs = MeuGrafo()
+        self.g3_bfs.adiciona_vertice("Ana")
+        self.g3_bfs.adiciona_vertice("Bella")
+        self.g3_bfs.adiciona_vertice("Mat")
+        self.g3_bfs.adiciona_vertice("John")
+        self.g3_bfs.adiciona_vertice("Carla")
+        self.g3_bfs.adiciona_vertice("Ester")
+        self.g3_bfs.adiciona_vertice("Flavia")
+        self.g3_bfs.adiciona_vertice("Heitor")
+        self.g3_bfs.adiciona_aresta("a2", "Bella", "Mat")
+        self.g3_bfs.adiciona_aresta("a3", "Mat", "Carla")
+        self.g3_bfs.adiciona_aresta("a4", "Carla", "Ana")
+        self.g3_bfs.adiciona_aresta("a6", "Bella", "Flavia")
+        self.g3_bfs.adiciona_aresta("a7", "Mat", "Heitor")
+        self.g3_bfs.adiciona_aresta("a8", "Carla", "John")
+        self.g3_bfs.adiciona_aresta("a10", "Ester", "Flavia")
+
+
+        self.g4_bfs = MeuGrafo()
+        self.g4_bfs.adiciona_vertice("A")
+        self.g4_bfs.adiciona_vertice("B")
+        self.g4_bfs.adiciona_vertice("C")
+        self.g4_bfs.adiciona_vertice("D")
+        self.g4_bfs.adiciona_vertice("E")
+        self.g4_bfs.adiciona_vertice("F")
+        self.g4_bfs.adiciona_vertice("G")
+        self.g4_bfs.adiciona_vertice("H")
+        self.g4_bfs.adiciona_vertice("I")
+        self.g4_bfs.adiciona_vertice("J")
+        self.g4_bfs.adiciona_aresta("a1", "A", "B")
+        self.g4_bfs.adiciona_aresta("a2", "A", "C")
+        self.g4_bfs.adiciona_aresta("a3", "B", "D")
+        self.g4_bfs.adiciona_aresta("a4", "B", "E")
+        self.g4_bfs.adiciona_aresta("a7", "D", "H")
+        self.g4_bfs.adiciona_aresta("a9", "F", "I")
+        self.g4_bfs.adiciona_aresta("a10", "G", "I")
+        self.g4_bfs.adiciona_aresta("a11", "H", "J")
+        self.g4_bfs.adiciona_aresta("a12", "I", "J")
+
+
 
     def test_adiciona_aresta(self):
         self.assertTrue(self.g_p.adiciona_aresta('a10', 'J', 'C'))
@@ -215,36 +545,80 @@ class TestGrafo(unittest.TestCase):
         self.assertFalse((self.g_d2.eh_completo()))
 
     def test_dfs(self):
-    # Teste com grafo simples
-        g = MeuGrafo()
-        g.adiciona_vertice('A')
-        g.adiciona_vertice('B')
-        g.adiciona_vertice('C')
-        g.adiciona_aresta('a1', 'A', 'B')
-        g.adiciona_aresta('a2', 'B', 'C')
+        self.assertEqual(self.g_k4.dfs("J"), self.g_k4_dfs)
+        self.assertEqual(self.g_co2.dfs("P"), self.g_co2_dfs)
+        self.assertEqual(self.g4.dfs("F"), self.g4_dfs)
+        self.assertEqual(self.g2.dfs("E"), self.g2_dfs)
+        self.assertEqual(self.g1.dfs("D"), self.g1_dfs)
+        self.assertEqual(self.g3.dfs("Heitor"), self.g3_dfs)
+        self.assertEqual(self.g_k5.dfs("B"), self.g_k5_dfs)
 
-        arvore = g.dfs('A')
+    def test_bfs(self):
+        self.assertEqual(self.g_k4.bfs("E"), self.g_k4_bfs)
+        self.assertEqual(self.g_co2.bfs("R"), self.g_co2_bfs)
+        self.assertEqual(self.g4.bfs("A"), self.g4_bfs)
+        self.assertEqual(self.g2.bfs("C"), self.g2_bfs)
+        self.assertEqual(self.g1.bfs("A"), self.g1_bfs)
+        self.assertEqual(self.g3.bfs("Carla"), self.g3_bfs)
+        self.assertEqual(self.g_k5.bfs("D"), self.g_k5_bfs)
 
-        # Verifica vértices
-        self.assertEqual(set(v.rotulo for v in arvore.vertices), {'A', 'B', 'C'})
 
-        # Verifica arestas (a ordem pode variar dependendo da implementação)
-        self.assertTrue(arvore.existe_rotulo_aresta('a1'))
-        self.assertTrue(arvore.existe_rotulo_aresta('a2'))
+    def test_eh_conexo(self):
+        # Grafo da Paraíba é conexo
+        self.assertTrue(self.g_p.eh_conexo())
+        # Grafo sem paralelas também é conexo
+        self.assertTrue(self.g_p_sem_paralelas.eh_conexo())
+        # Grafo desconexo
+        self.assertFalse(self.g_d.eh_conexo())
+        self.assertFalse(self.g_d2.eh_conexo())
+        # Grafo com 1 vértice é considerado conexo
+        self.assertTrue(self.g_c3.eh_conexo())
 
-        # Teste com vértice inválido
-        with self.assertRaises(VerticeInvalidoError):
-            g.dfs('X')
+    def test_ha_ciclo(self):
+        # Grafo com ciclo (g_p tem paralelas e ciclo)
+        self.assertTrue(self.g_p.ha_ciclo())
+        # Grafo sem paralelas e sem ciclo
+        self.assertFalse(self.g_p_sem_paralelas.ha_ciclo())
+        # Grafo completo (tem ciclos)
+        self.assertTrue(self.g_c.ha_ciclo())
+        self.assertTrue(self.g_c2.ha_ciclo())
+        # Grafo com 1 vértice sem arestas não tem ciclo
+        self.assertFalse(self.g_c3.ha_ciclo())
+        # Grafo com laço é um ciclo
+        self.assertTrue(self.g_l1.ha_ciclo())
+        self.assertTrue(self.g_l4.ha_ciclo())
+        # Grafo desconexo com aresta única — sem ciclo
+        self.assertFalse(self.g_d.ha_ciclo())
+        self.assertFalse(self.g_d2.ha_ciclo())
 
-    def test_bfs_recursivo(self):
-        # Teste básico
-        resultado = self.g_p.bfs_recursivo("C")
-        self.assertEqual(resultado, self.g_p_bfs_c_esperado)  # Defina seu grafo esperado
+    def test_eh_arvore(self):
+        # Grafo válido como árvore
+        folhas = self.g_p_sem_paralelas.eh_arvore()
+        self.assertIsInstance(folhas, list)
+        self.assertEqual(set(folhas), {'J', 'E', 'P', 'Z'})  # grau 1
+        # Grafo com ciclo — não é árvore
+        self.assertFalse(self.g_p.eh_arvore())
+        self.assertFalse(self.g_c.eh_arvore())
+        self.assertFalse(self.g_l1.eh_arvore())
+        # Grafo desconexo — não é árvore
+        self.assertFalse(self.g_d.eh_arvore())
+        self.assertFalse(self.g_d2.eh_arvore())
+        # Grafo com 1 vértice e sem aresta é uma árvore com 1 "folha"
+        self.assertEqual(self.g_c3.eh_arvore(), ['A'])
 
-        # Verifica propriedades da BFS
-        self.assertEqual(len(resultado.arestas), len(self.g_p.vertices) - 1)
-
-        # Teste com grafo vazio
-        g_vazio = MeuGrafo()
-        with self.assertRaises(VerticeInvalidoError):
-            g_vazio.bfs_recursivo("A")
+    def test_eh_bipartido(self):
+        # Grafo sem paralelas (em forma de árvore) é bipartido
+        self.assertTrue(self.g_p_sem_paralelas.eh_bipartido())
+        # Grafo da Paraíba tem paralelas e ciclo ímpar — não bipartido
+        self.assertFalse(self.g_p.eh_bipartido())
+        # Grafo completo com 3 vértices — tem ciclo ímpar — não bipartido
+        self.assertFalse(self.g_c2.eh_bipartido())
+        # Grafo com laço — não pode ser bipartido
+        self.assertFalse(self.g_l1.eh_bipartido())
+        self.assertFalse(self.g_l4.eh_bipartido())
+        # Grafo com 1 vértice é bipartido
+        self.assertTrue(self.g_c3.eh_bipartido())
+        # Grafo desconexo com vértices isolados — ainda é bipartido
+        self.assertTrue(self.g_d2.eh_bipartido())
+        # Grafo com uma aresta (2 vértices) — é bipartido
+        self.assertTrue(self.g_r.eh_bipartido())
